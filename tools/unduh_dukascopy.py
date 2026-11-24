@@ -141,7 +141,9 @@ def bulan(y, m, batas):
 def main():
     mulai = sys.argv[1] if len(sys.argv) > 1 else "2020-01"
     sampai = sys.argv[2] if len(sys.argv) > 2 else (dt.date.today() - dt.timedelta(days=1)).isoformat()
-    y, m = map(int, mulai.split("-"))
+    bagian = list(map(int, mulai.split("-")))
+    y, m = bagian[0], bagian[1]
+    awal = dt.datetime(y, m, bagian[2] if len(bagian) > 2 else 1)   # MULAI boleh YYYY-MM atau YYYY-MM-DD
     batas = dt.datetime.fromisoformat(sampai) + dt.timedelta(days=1)  # inklusif s/d akhir hari itu
     os.makedirs(CACHE, exist_ok=True)
     log = open(os.path.join(FOLDER, "KEMAJUAN.txt"), "a", encoding="utf-8")
@@ -156,7 +158,8 @@ def main():
         while dt.datetime(y, m, 1) < batas:
             nama = os.path.join(FOLDER, f"{SIMBOL}_{y}_{m:02d}.csv")
             jam, akhir = bulan(y, m, batas)
-            lengkap = akhir == dt.datetime(y + (m == 12), m % 12 + 1, 1)
+            jam = [j for j in jam if j >= awal]
+            lengkap = akhir == dt.datetime(y + (m == 12), m % 12 + 1, 1) and jam[0].day == 1
             if not lengkap:
                 nama = nama.replace(".csv", "_SEBAGIAN.csv")
             if os.path.exists(nama) and lengkap:
