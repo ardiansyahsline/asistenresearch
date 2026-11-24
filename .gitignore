@@ -1,0 +1,10 @@
+# repo publik: data, setelan & EA gak boleh masuk
+*.csv
+*.bi5
+*.part
+*.set
+*.mq5
+*.ex5
+*.zip
+*.tar.gz
+_CACHE/
